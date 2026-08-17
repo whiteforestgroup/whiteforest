@@ -1,0 +1,11 @@
+{
+  "name": "whiteforest",
+  "private": true,
+  "scripts": {
+    "dev:site": "pnpm --filter site dev",
+    "dev:crm": "pnpm --filter crm dev",
+    "build": "pnpm --filter site build && pnpm --filter crm build",
+    "lint": "pnpm --filter site lint && pnpm --filter crm lint"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

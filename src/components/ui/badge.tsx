@@ -8,12 +8,13 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-neutral-900 text-neutral-50",
-        secondary: "bg-neutral-100 text-neutral-900",
+        default: "bg-accent text-white",
+        secondary: "bg-app-bg text-fg",
         amber: "bg-amber-100 text-amber-800",
         blue: "bg-blue-100 text-blue-800",
         purple: "bg-purple-100 text-purple-800",
         emerald: "bg-emerald-100 text-emerald-800",
+        red: "bg-red-100 text-red-800",
       },
     },
     defaultVariants: {

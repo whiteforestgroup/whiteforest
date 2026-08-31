@@ -19,7 +19,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
     <thead
       data-slot="table-header"
       className={cn(
-        "bg-neutral-50 text-xs tracking-wide text-neutral-500 uppercase [&_tr]:border-b",
+        "bg-app-bg text-fg-muted [&_tr]:border-card-border text-xs tracking-wide uppercase [&_tr]:border-b",
         className,
       )}
       {...props}
@@ -31,7 +31,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
       data-slot="table-body"
-      className={cn("divide-y divide-neutral-100", className)}
+      className={cn("divide-card-border divide-y", className)}
       {...props}
     />
   );
@@ -41,7 +41,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
       data-slot="table-row"
-      className={cn("transition-colors hover:bg-neutral-50", className)}
+      className={cn("hover:bg-app-bg transition-colors", className)}
       {...props}
     />
   );

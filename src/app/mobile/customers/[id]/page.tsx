@@ -33,48 +33,48 @@ export default async function CustomerDetailPage({
       />
 
       <div className="px-6 pt-4">
-        <div className="rounded-2xl bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-3">
+        <div className="bg-card-bg rounded-2xl p-4 shadow-sm">
+          <div className="border-card-border flex items-center gap-3 border-b pb-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-base font-semibold text-amber-800">
               {customer.firstName[0]}
               {customer.lastName[0]}
             </div>
             <div>
-              <p className="font-semibold text-stone-900">
+              <p className="text-fg font-semibold">
                 {customer.firstName} {customer.lastName}
               </p>
-              <p className="text-sm text-stone-500">{customer.phone}</p>
+              <p className="text-fg-muted text-sm">{customer.phone}</p>
             </div>
           </div>
           <div className="flex items-center justify-between pt-3 pb-1.5">
-            <span className="text-sm text-stone-500">Address</span>
-            <span className="font-medium text-stone-900">
+            <span className="text-fg-muted text-sm">Address</span>
+            <span className="text-fg font-medium">
               {[customer.city, customer.state].filter(Boolean).join(", ") ||
                 "—"}
             </span>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-sm text-stone-500">Stage</span>
-            <span className="font-medium text-stone-900">
+            <span className="text-fg-muted text-sm">Stage</span>
+            <span className="text-fg font-medium">
               {customer.stage?.name ?? "—"}
             </span>
           </div>
         </div>
 
-        <h2 className="mt-6 mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
+        <h2 className="text-fg-subtle mt-6 mb-2 text-xs font-semibold tracking-wide uppercase">
           Recent History
         </h2>
         <div className="space-y-2">
           {history.map((item, i) => (
-            <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
-              <p className="font-medium text-stone-900">{item.label}</p>
-              <p className="mt-0.5 text-sm text-stone-400">
+            <div key={i} className="bg-card-bg rounded-2xl p-4 shadow-sm">
+              <p className="text-fg font-medium">{item.label}</p>
+              <p className="text-fg-subtle mt-0.5 text-sm">
                 {format(item.date, "MMM d, yyyy")}
               </p>
             </div>
           ))}
           {history.length === 0 && (
-            <p className="rounded-2xl bg-white p-4 text-center text-sm text-stone-400 shadow-sm">
+            <p className="bg-card-bg text-fg-subtle rounded-2xl p-4 text-center text-sm shadow-sm">
               No history yet.
             </p>
           )}

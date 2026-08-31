@@ -22,13 +22,13 @@ export function RevenueChart({
           <XAxis
             dataKey="date"
             tickFormatter={(value: string) => format(parseISO(value), "MMM d")}
-            tick={{ fontSize: 12, fill: "var(--color-neutral-500, #737373)" }}
+            tick={{ fontSize: 12, fill: "var(--color-fg-muted)" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             tickFormatter={(value: number) => `$${value}`}
-            tick={{ fontSize: 12, fill: "var(--color-neutral-500, #737373)" }}
+            tick={{ fontSize: 12, fill: "var(--color-fg-muted)" }}
             axisLine={false}
             tickLine={false}
             width={48}

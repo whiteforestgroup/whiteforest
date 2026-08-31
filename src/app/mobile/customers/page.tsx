@@ -26,18 +26,18 @@ export default async function MobileCustomersPage() {
       <div className="px-6 pt-4">
         <Link
           href="/mobile/pipeline"
-          className="mb-4 flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+          className="bg-card-bg mb-4 flex items-center justify-between rounded-2xl p-4 shadow-sm"
         >
-          <span className="font-semibold text-stone-900">View Pipeline</span>
+          <span className="text-fg font-semibold">View Pipeline</span>
           <span className="text-sm text-amber-600">See all stages →</span>
         </Link>
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-stone-400" />
+          <Search className="text-fg-subtle pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search customers..."
             disabled
-            className="w-full rounded-xl border border-stone-200 bg-white py-2.5 pr-3 pl-9 text-sm text-stone-700 placeholder:text-stone-400"
+            className="border-card-border bg-card-bg text-fg placeholder:text-fg-subtle w-full rounded-xl border py-2.5 pr-3 pl-9 text-sm"
           />
         </div>
 
@@ -46,17 +46,17 @@ export default async function MobileCustomersPage() {
             <Link
               key={customer.id}
               href={`/mobile/customers/${customer.id}`}
-              className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm"
+              className="bg-card-bg flex items-center gap-3 rounded-2xl p-3 shadow-sm"
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-800">
                 {customer.firstName[0]}
                 {customer.lastName[0]}
               </div>
               <div>
-                <p className="font-semibold text-stone-900">
+                <p className="text-fg font-semibold">
                   {customer.firstName} {customer.lastName}
                 </p>
-                <p className="text-sm text-stone-500">{customer.phone}</p>
+                <p className="text-fg-muted text-sm">{customer.phone}</p>
               </div>
             </Link>
           ))}

@@ -24,22 +24,22 @@ export default async function JobDetailPage({
       />
 
       <div className="px-6 pt-4">
-        <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className="bg-card-bg rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-sm text-stone-500">Service</span>
-            <span className="font-medium text-stone-900">
+            <span className="text-fg-muted text-sm">Service</span>
+            <span className="text-fg font-medium">
               {job.service?.name ?? "—"}
             </span>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-sm text-stone-500">Time</span>
-            <span className="font-medium text-stone-900">
+            <span className="text-fg-muted text-sm">Time</span>
+            <span className="text-fg font-medium">
               {job.scheduledAt ? format(job.scheduledAt, "h:mm a") : "—"}
             </span>
           </div>
           <div className="flex items-center justify-between py-1.5">
-            <span className="text-sm text-stone-500">Price</span>
-            <span className="font-medium text-stone-900">
+            <span className="text-fg-muted text-sm">Price</span>
+            <span className="text-fg font-medium">
               ${Number(job.price).toFixed(2)}
             </span>
           </div>

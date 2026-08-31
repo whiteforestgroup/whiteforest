@@ -28,20 +28,27 @@ async function main() {
   await db.expense.deleteMany();
   await db.pipelineStage.deleteMany();
 
-  const [newLead, followUp, booked, quoted] = await Promise.all([
-    db.pipelineStage.create({
-      data: { name: "New Lead", order: 0, color: "stone" },
-    }),
-    db.pipelineStage.create({
-      data: { name: "Follow Up", order: 1, color: "amber" },
-    }),
-    db.pipelineStage.create({
-      data: { name: "Booked", order: 2, color: "blue" },
-    }),
-    db.pipelineStage.create({
-      data: { name: "Quoted", order: 3, color: "purple" },
-    }),
-  ]);
+  const [newLead, followUp, booked, completedStage, maintenance, reactivation] =
+    await Promise.all([
+      db.pipelineStage.create({
+        data: { name: "New Lead", order: 0, color: "stone" },
+      }),
+      db.pipelineStage.create({
+        data: { name: "Follow Up", order: 1, color: "amber" },
+      }),
+      db.pipelineStage.create({
+        data: { name: "Booked", order: 2, color: "blue" },
+      }),
+      db.pipelineStage.create({
+        data: { name: "Completed", order: 3, color: "emerald" },
+      }),
+      db.pipelineStage.create({
+        data: { name: "Maintenance", order: 4, color: "purple" },
+      }),
+      db.pipelineStage.create({
+        data: { name: "Reactivation", order: 5, color: "red" },
+      }),
+    ]);
 
   const owner = await db.staff.create({
     data: {
@@ -100,7 +107,7 @@ async function main() {
       phone: "(555) 456-7890",
       email: "priya.patel@example.com",
       vehicle: "2021 Honda Civic",
-      stage: booked,
+      stage: completedStage,
       leadSource: "Website",
     },
     {
@@ -127,7 +134,7 @@ async function main() {
       phone: "(555) 444-9922",
       email: "sam.whitfield@example.com",
       vehicle: "2018 Subaru Outback",
-      stage: booked,
+      stage: completedStage,
       leadSource: "Walk-In",
     },
     {
@@ -221,9 +228,29 @@ async function main() {
       phone: "(555) 010-2024",
       email: "nadia.f@example.com",
       vehicle: "2023 Lexus RX",
-      stage: quoted,
+      stage: followUp,
       leadSource: "Referral",
       notes: "Ultimate Correction quoted, awaiting reply",
+    },
+    {
+      firstName: "Wendy",
+      lastName: "H.",
+      phone: "(555) 010-2025",
+      email: "wendy.h@example.com",
+      vehicle: "2021 Volvo XC60",
+      stage: maintenance,
+      leadSource: "Referral",
+      notes: "Monthly wash plan member",
+    },
+    {
+      firstName: "Carlos",
+      lastName: "M.",
+      phone: "(555) 010-2026",
+      email: "carlos.m@example.com",
+      vehicle: "2017 Nissan Altima",
+      stage: reactivation,
+      leadSource: "Google",
+      notes: "Last visit 8 months ago — win-back campaign",
     },
   ];
 

@@ -32,7 +32,7 @@ export function PipelineStageList({
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap ${
               s.id === activeStageId
                 ? "bg-amber-500 text-white"
-                : "bg-white text-stone-600 shadow-sm"
+                : "bg-card-bg text-fg-muted shadow-sm"
             }`}
           >
             {s.name} · {s.customers.length}
@@ -41,7 +41,7 @@ export function PipelineStageList({
       </div>
 
       <div className="px-6 pt-4">
-        <h2 className="mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
+        <h2 className="text-fg-subtle mb-2 text-xs font-semibold tracking-wide uppercase">
           {stage?.name}
         </h2>
         <div className="space-y-2">
@@ -50,24 +50,24 @@ export function PipelineStageList({
             return (
               <div
                 key={c.id}
-                className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+                className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
               >
                 <div>
-                  <p className="font-semibold text-stone-900">
+                  <p className="text-fg font-semibold">
                     {c.firstName} {c.lastName}
                   </p>
-                  <p className="text-sm text-stone-500">
+                  <p className="text-fg-muted text-sm">
                     {c.notes ?? c.leadSource ?? "—"}
                   </p>
                 </div>
-                <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium whitespace-nowrap text-stone-500">
+                <span className="bg-card-border text-fg-muted rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap">
                   {idleDays === 0 ? "New" : `${idleDays}d idle`}
                 </span>
               </div>
             );
           })}
           {stage?.customers.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-stone-300 p-6 text-center text-sm text-stone-400">
+            <div className="border-card-border text-fg-subtle rounded-2xl border border-dashed p-6 text-center text-sm">
               No customers in this stage.
             </div>
           )}

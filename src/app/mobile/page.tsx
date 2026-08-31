@@ -24,31 +24,29 @@ export default async function TodayPage() {
 
       <div className="px-6 pt-4">
         <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-2xl bg-white p-3 shadow-sm">
-            <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
+          <div className="bg-card-bg rounded-2xl p-3 shadow-sm">
+            <p className="text-fg-subtle text-[11px] font-medium tracking-wide uppercase">
               Revenue
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">
+            <p className="text-fg mt-1 text-lg font-bold">
               ${revenue.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-2xl bg-white p-3 shadow-sm">
-            <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
+          <div className="bg-card-bg rounded-2xl p-3 shadow-sm">
+            <p className="text-fg-subtle text-[11px] font-medium tracking-wide uppercase">
               Leads
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">{leadCount}</p>
+            <p className="text-fg mt-1 text-lg font-bold">{leadCount}</p>
           </div>
-          <div className="rounded-2xl bg-white p-3 shadow-sm">
-            <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
+          <div className="bg-card-bg rounded-2xl p-3 shadow-sm">
+            <p className="text-fg-subtle text-[11px] font-medium tracking-wide uppercase">
               Jobs
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">
-              {bookings.length}
-            </p>
+            <p className="text-fg mt-1 text-lg font-bold">{bookings.length}</p>
           </div>
         </div>
 
-        <h2 className="mt-6 mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
+        <h2 className="text-fg-subtle mt-6 mb-2 text-xs font-semibold tracking-wide uppercase">
           Up Next
         </h2>
         <div className="space-y-2">
@@ -56,13 +54,13 @@ export default async function TodayPage() {
             <Link
               key={job.id}
               href={`/mobile/jobs/${job.id}`}
-              className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+              className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
             >
               <div>
-                <p className="font-semibold text-stone-900">
+                <p className="text-fg font-semibold">
                   {customerName(job.customer)}
                 </p>
-                <p className="text-sm text-stone-500">
+                <p className="text-fg-muted text-sm">
                   {job.scheduledAt && format(job.scheduledAt, "h:mm a")} ·{" "}
                   {job.service?.name}
                 </p>
@@ -75,7 +73,7 @@ export default async function TodayPage() {
             </Link>
           ))}
           {upNext.length === 0 && (
-            <p className="rounded-2xl bg-white p-4 text-center text-sm text-stone-400 shadow-sm">
+            <p className="bg-card-bg text-fg-subtle rounded-2xl p-4 text-center text-sm shadow-sm">
               Nothing scheduled yet.
             </p>
           )}

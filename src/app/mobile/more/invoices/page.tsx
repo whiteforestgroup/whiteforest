@@ -16,13 +16,13 @@ export default async function InvoicesPage() {
         {invoices.map((invoice) => (
           <div
             key={invoice.id}
-            className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+            className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
           >
             <div>
-              <p className="font-semibold text-stone-900">
+              <p className="text-fg font-semibold">
                 {invoice.customer.firstName} {invoice.customer.lastName}
               </p>
-              <p className="text-sm text-stone-500">
+              <p className="text-fg-muted text-sm">
                 ${Number(invoice.amount).toFixed(2)}
                 {invoice.dueDate &&
                   ` · ${invoice.dueDate.toLocaleDateString()}`}

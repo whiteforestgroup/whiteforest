@@ -9,10 +9,8 @@ export default async function CalendarPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-        Calendar
-      </h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h1 className="text-fg text-2xl font-bold tracking-tight">Calendar</h1>
+      <p className="text-fg-muted mt-1 text-sm">
         Week of {format(weekStart, "MMMM d, yyyy")}
       </p>
 
@@ -27,12 +25,12 @@ export default async function CalendarPage() {
           return (
             <Card
               key={dayKey}
-              className={`min-h-40 p-3 ${isToday ? "border-neutral-900 bg-neutral-50" : ""}`}
+              className={`min-h-40 p-3 ${isToday ? "border-accent bg-app-bg" : ""}`}
             >
-              <div className="text-xs font-medium tracking-wide text-neutral-400 uppercase">
+              <div className="text-fg-subtle text-xs font-medium tracking-wide uppercase">
                 {format(day, "EEE")}
               </div>
-              <div className="text-lg font-semibold text-neutral-900">
+              <div className="text-fg text-lg font-semibold">
                 {format(day, "d")}
               </div>
               <div className="mt-3 space-y-2">

@@ -14,7 +14,7 @@ export function MobileHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-b-3xl bg-[#233420] px-6 pt-6 pb-6 text-white">
+    <div className="bg-sidebar rounded-b-3xl px-6 pt-6 pb-6 text-white">
       {back && (
         <Link
           href={back.href}

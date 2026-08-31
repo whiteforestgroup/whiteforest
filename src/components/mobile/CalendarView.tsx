@@ -49,20 +49,20 @@ export function CalendarView({ events }: { events: CalendarEvent[] }) {
       />
 
       <div className="flex items-center justify-between px-6 pt-4">
-        <div className="flex items-center gap-1 text-sm font-medium text-stone-600">
+        <div className="text-fg-muted flex items-center gap-1 text-sm font-medium">
           <ChevronLeft className="h-4 w-4" />
           {format(days[0], "MMM d")}
           <ChevronRight className="h-4 w-4" />
         </div>
-        <div className="flex items-center gap-1 rounded-full bg-white p-1 shadow-sm">
+        <div className="bg-card-bg flex items-center gap-1 rounded-full p-1 shadow-sm">
           <button
             type="button"
             onClick={() => setVisibleDays((d) => Math.max(1, d - 1))}
-            className="flex h-6 w-6 items-center justify-center rounded-full text-stone-500"
+            className="text-fg-muted flex h-6 w-6 items-center justify-center rounded-full"
           >
             <Minus className="h-3.5 w-3.5" />
           </button>
-          <span className="w-14 text-center text-xs text-stone-500">
+          <span className="text-fg-muted w-14 text-center text-xs">
             {visibleDays === 7
               ? "7 days"
               : `${visibleDays} day${visibleDays > 1 ? "s" : ""}`}
@@ -70,7 +70,7 @@ export function CalendarView({ events }: { events: CalendarEvent[] }) {
           <button
             type="button"
             onClick={() => setVisibleDays((d) => Math.min(7, d + 1))}
-            className="flex h-6 w-6 items-center justify-center rounded-full text-stone-500"
+            className="text-fg-muted flex h-6 w-6 items-center justify-center rounded-full"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -82,10 +82,10 @@ export function CalendarView({ events }: { events: CalendarEvent[] }) {
           <div />
           {days.map((day) => (
             <div key={day.toISOString()} className="pb-1 text-center">
-              <div className="text-[10px] font-medium text-stone-400 uppercase">
+              <div className="text-fg-subtle text-[10px] font-medium uppercase">
                 {format(day, "EEE")}
               </div>
-              <div className="text-sm font-semibold text-stone-900">
+              <div className="text-fg text-sm font-semibold">
                 {format(day, "d")}
               </div>
             </div>
@@ -98,7 +98,7 @@ export function CalendarView({ events }: { events: CalendarEvent[] }) {
               <div
                 key={hour}
                 style={{ height: HOUR_HEIGHT }}
-                className="pr-2 text-right text-[10px] text-stone-400"
+                className="text-fg-subtle pr-2 text-right text-[10px]"
               >
                 {hour % 12 === 0 ? 12 : hour % 12}
                 {hour >= 12 ? "P" : "A"}
@@ -113,13 +113,13 @@ export function CalendarView({ events }: { events: CalendarEvent[] }) {
             return (
               <div
                 key={dayKey}
-                className="relative border-l border-stone-200"
+                className="border-card-border relative border-l"
                 style={{ height: HOUR_HEIGHT * hours.length }}
               >
                 {hours.map((hour) => (
                   <div
                     key={hour}
-                    className="border-b border-stone-100"
+                    className="border-card-border border-b"
                     style={{ height: HOUR_HEIGHT }}
                   />
                 ))}

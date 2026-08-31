@@ -19,15 +19,15 @@ export default async function CustomersPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+          <h1 className="text-fg text-2xl font-bold tracking-tight">
             Customers
           </h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="text-fg-muted mt-1 text-sm">
             {customers.length} customers across all locations.
           </p>
         </div>
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <Search className="text-fg-subtle pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             type="text"
             placeholder="Search customers..."
@@ -54,28 +54,28 @@ export default async function CustomersPage() {
               <TableRow key={customer.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-semibold text-neutral-700">
+                    <div className="bg-card-border text-fg flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold">
                       {customer.firstName[0]}
                       {customer.lastName[0]}
                     </div>
-                    <span className="font-medium text-neutral-900">
+                    <span className="text-fg font-medium">
                       {customerName(customer)}
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="text-neutral-600">
+                <TableCell className="text-fg-muted">
                   <div className="flex items-center gap-1.5">
-                    <Phone className="h-3.5 w-3.5 text-neutral-400" />
+                    <Phone className="text-fg-subtle h-3.5 w-3.5" />
                     {customer.phone}
                   </div>
                   {customer.email && (
                     <div className="mt-1 flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5 text-neutral-400" />
+                      <Mail className="text-fg-subtle h-3.5 w-3.5" />
                       {customer.email}
                     </div>
                   )}
                 </TableCell>
-                <TableCell className="text-neutral-700">
+                <TableCell className="text-fg">
                   {customer.vehicles[0]
                     ? [
                         customer.vehicles[0].year,
@@ -86,13 +86,11 @@ export default async function CustomersPage() {
                         .join(" ")
                     : "—"}
                 </TableCell>
-                <TableCell className="text-neutral-700">
-                  {customer.visits}
-                </TableCell>
-                <TableCell className="font-medium text-neutral-900">
+                <TableCell className="text-fg">{customer.visits}</TableCell>
+                <TableCell className="text-fg font-medium">
                   ${customer.totalSpent.toLocaleString()}
                 </TableCell>
-                <TableCell className="text-neutral-500">
+                <TableCell className="text-fg-muted">
                   {customer.lastVisit
                     ? format(customer.lastVisit, "yyyy-MM-dd")
                     : "—"}

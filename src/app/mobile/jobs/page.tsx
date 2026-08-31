@@ -27,7 +27,7 @@ export default async function JobsPage() {
       <div className="space-y-6 px-6 pt-4">
         {days.map(([date, dayJobs]) => (
           <div key={date}>
-            <h2 className="mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
+            <h2 className="text-fg-subtle mb-2 text-xs font-semibold tracking-wide uppercase">
               {format(new Date(`${date}T00:00:00`), "EEE, MMM d").toUpperCase()}
             </h2>
             <div className="space-y-2">
@@ -35,13 +35,13 @@ export default async function JobsPage() {
                 <Link
                   key={job.id}
                   href={`/mobile/jobs/${job.id}`}
-                  className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+                  className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
                 >
                   <div>
-                    <p className="font-semibold text-stone-900">
+                    <p className="text-fg font-semibold">
                       {customerName(job.customer)}
                     </p>
-                    <p className="text-sm text-stone-500">
+                    <p className="text-fg-muted text-sm">
                       {format(job.scheduledAt!, "h:mm a")} · {job.service?.name}
                     </p>
                   </div>

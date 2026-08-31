@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const ROWS = [
   { label: "Invoices", href: "/mobile/more/invoices" },
@@ -19,20 +20,25 @@ export default function MorePage() {
     <div>
       <MobileHeader title="More" />
 
-      <div className="space-y-2 px-6 pt-4">
+      <div className="flex items-center justify-between px-6 pt-4">
+        <span className="text-fg-muted text-sm font-medium">Appearance</span>
+        <ThemeToggle />
+      </div>
+
+      <div className="mt-4 space-y-2 px-6">
         {ROWS.map((row) => (
           <Link
             key={row.label}
             href={row.href}
-            className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+            className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
           >
             <div>
-              <p className="font-semibold text-stone-900">{row.label}</p>
+              <p className="text-fg font-semibold">{row.label}</p>
               {row.sub && (
                 <p className="text-sm text-amber-700/80">{row.sub}</p>
               )}
             </div>
-            <ChevronRight className="h-4 w-4 text-stone-300" />
+            <ChevronRight className="text-fg-subtle h-4 w-4" />
           </Link>
         ))}
       </div>

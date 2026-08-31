@@ -22,29 +22,29 @@ export default function AddCustomerPage() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
+            <label className="text-fg-subtle text-xs font-semibold tracking-wide uppercase">
               First Name
             </label>
             <input
               name="firstName"
               required
-              className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 focus:border-amber-500 focus:outline-none"
+              className="border-card-border bg-card-bg text-fg mt-1 w-full rounded-xl border px-3 py-2.5 text-sm focus:border-amber-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
+            <label className="text-fg-subtle text-xs font-semibold tracking-wide uppercase">
               Last Name
             </label>
             <input
               name="lastName"
               required
-              className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 focus:border-amber-500 focus:outline-none"
+              className="border-card-border bg-card-bg text-fg mt-1 w-full rounded-xl border px-3 py-2.5 text-sm focus:border-amber-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
+          <label className="text-fg-subtle text-xs font-semibold tracking-wide uppercase">
             Phone
           </label>
           <input
@@ -52,23 +52,23 @@ export default function AddCustomerPage() {
             type="tel"
             placeholder="(555) 000-0000"
             required
-            className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-300 focus:border-amber-500 focus:outline-none"
+            className="border-card-border bg-card-bg text-fg placeholder:text-fg-subtle mt-1 w-full rounded-xl border px-3 py-2.5 text-sm focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
+          <label className="text-fg-subtle text-xs font-semibold tracking-wide uppercase">
             Address
           </label>
           <input
             name="address"
             placeholder="Street, City, State"
-            className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-300 focus:border-amber-500 focus:outline-none"
+            className="border-card-border bg-card-bg text-fg placeholder:text-fg-subtle mt-1 w-full rounded-xl border px-3 py-2.5 text-sm focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
+          <label className="text-fg-subtle text-xs font-semibold tracking-wide uppercase">
             Lead Source
           </label>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -80,7 +80,7 @@ export default function AddCustomerPage() {
                 className={`rounded-full px-4 py-1.5 text-sm font-medium ${
                   leadSource === source
                     ? "bg-amber-500 text-white"
-                    : "bg-white text-stone-600 shadow-sm"
+                    : "bg-card-bg text-fg-muted shadow-sm"
                 }`}
               >
                 {source}
@@ -97,7 +97,7 @@ export default function AddCustomerPage() {
         </button>
         <Link
           href="/mobile/customers"
-          className="block text-center text-sm text-stone-400"
+          className="text-fg-subtle block text-center text-sm"
         >
           Cancel
         </Link>

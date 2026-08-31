@@ -18,15 +18,15 @@ export default async function ExpensesPage() {
         {expenses.map((expense) => (
           <div
             key={expense.id}
-            className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+            className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
           >
             <div>
-              <p className="font-semibold text-stone-900">{expense.vendor}</p>
-              <p className="text-sm text-stone-500">
+              <p className="text-fg font-semibold">{expense.vendor}</p>
+              <p className="text-fg-muted text-sm">
                 {expense.category} · {expense.date.toLocaleDateString()}
               </p>
             </div>
-            <p className="font-semibold text-stone-900">
+            <p className="text-fg font-semibold">
               ${Number(expense.amount).toFixed(2)}
             </p>
           </div>

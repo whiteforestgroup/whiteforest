@@ -34,7 +34,7 @@ export function JobDetailActions({
 
   return (
     <>
-      <h2 className="mt-6 mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
+      <h2 className="text-fg-subtle mt-6 mb-2 text-xs font-semibold tracking-wide uppercase">
         Before &amp; After Photos
       </h2>
       <div className="grid grid-cols-2 gap-3">
@@ -42,7 +42,7 @@ export function JobDetailActions({
           type="button"
           onClick={() => toggle("before")}
           className={`flex flex-col items-center gap-2 rounded-2xl p-6 shadow-sm ${
-            beforePhoto ? "bg-amber-500 text-white" : "bg-white text-stone-500"
+            beforePhoto ? "bg-amber-500 text-white" : "bg-card-bg text-fg-muted"
           }`}
         >
           {beforePhoto ? (
@@ -58,7 +58,7 @@ export function JobDetailActions({
           type="button"
           onClick={() => toggle("after")}
           className={`flex flex-col items-center gap-2 rounded-2xl p-6 shadow-sm ${
-            afterPhoto ? "bg-amber-500 text-white" : "bg-white text-stone-500"
+            afterPhoto ? "bg-amber-500 text-white" : "bg-card-bg text-fg-muted"
           }`}
         >
           {afterPhoto ? (

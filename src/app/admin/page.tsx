@@ -1,41 +1,35 @@
 import { format } from "date-fns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
 import { RevenueChart } from "@/components/RevenueChart";
-import { getBookings, customerName, vehicleLabel } from "@/lib/queries";
+import {
+  getBookings,
+  getPipelineStagesWithCustomers,
+  customerName,
+} from "@/lib/queries";
 import { db } from "@/lib/db";
-import { bookingStatusBadge, bookingStatusLabel } from "@/lib/status";
+import { bookingStatusMobileClass, bookingStatusLabel } from "@/lib/status";
 
 export default async function Dashboard() {
-  const [bookings, customerCount, messages] = await Promise.all([
+  const [bookings, customerCount, stages] = await Promise.all([
     getBookings(),
     db.customer.count(),
-    db.message.findMany({
-      include: { customer: true },
-      orderBy: { createdAt: "desc" },
-      take: 4,
-    }),
+    getPipelineStagesWithCustomers(),
   ]);
 
-  const newCount = bookings.filter((b) => b.status === "NEW").length;
-  const scheduledCount = bookings.filter(
-    (b) => b.status === "SCHEDULED",
+  const newLeadsCount =
+    stages.find((s) => s.order === 0)?.customers.length ?? 0;
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const jobsThisWeek = bookings.filter(
+    (b) => b.scheduledAt && b.scheduledAt >= weekAgo,
   ).length;
   const revenue = bookings.reduce((sum, b) => sum + Number(b.price), 0);
 
   const stats = [
-    { label: "New Requests", value: newCount },
-    { label: "Scheduled Jobs", value: scheduledCount },
-    { label: "Pipeline Revenue", value: `$${revenue.toLocaleString()}` },
-    { label: "Active Customers", value: customerCount },
+    { label: "Revenue", value: `$${revenue.toLocaleString()}` },
+    { label: "New Leads", value: newLeadsCount },
+    { label: "Jobs This Week", value: jobsThisWeek },
+    { label: "Customers", value: customerCount },
   ];
 
   const revenueByDate = new Map<string, number>();
@@ -48,22 +42,23 @@ export default async function Dashboard() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, revenue]) => ({ date, revenue }));
 
+  const upcoming = bookings.filter((b) => b.scheduledAt).slice(0, 4);
+  const maxStageCount = Math.max(...stages.map((s) => s.customers.length), 1);
+
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-        Dashboard
-      </h1>
-      <p className="mt-1 text-sm text-neutral-500">
-        Overview of incoming bookings across your business.
+      <h1 className="text-fg text-2xl font-bold tracking-tight">Dashboard</h1>
+      <p className="text-fg-muted mt-1 text-sm">
+        {format(new Date(), "EEEE, MMMM d, yyyy")}
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="p-6">
-            <p className="text-sm font-medium text-neutral-500">{stat.label}</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-900">
-              {stat.value}
+            <p className="text-fg-muted text-xs font-medium tracking-wide uppercase">
+              {stat.label}
             </p>
+            <p className="text-fg mt-2 text-3xl font-bold">{stat.value}</p>
           </Card>
         ))}
       </div>
@@ -77,73 +72,64 @@ export default async function Dashboard() {
         </CardContent>
       </Card>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        <Card className="py-0 lg:col-span-2">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card className="py-0">
           <CardHeader className="pt-4">
-            <CardTitle>Recent Bookings</CardTitle>
+            <CardTitle>Upcoming Appointments</CardTitle>
           </CardHeader>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bookings.slice(0, 5).map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell>
-                    <div className="font-medium text-neutral-900">
-                      {customerName(booking.customer)}
-                    </div>
-                    <div className="text-neutral-500">
-                      {vehicleLabel(booking.vehicle)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-neutral-700">
-                    {booking.service?.name ?? "—"}
-                    <div className="text-neutral-500">
-                      ${Number(booking.price)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-neutral-700">
-                    {booking.scheduledAt
-                      ? format(booking.scheduledAt, "yyyy-MM-dd")
-                      : "—"}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={bookingStatusBadge[booking.status]}>
-                      {bookingStatusLabel[booking.status]}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CardContent className="space-y-1 p-0 pb-2">
+            {upcoming.map((b) => (
+              <div
+                key={b.id}
+                className="border-card-border flex items-center justify-between border-b px-6 py-3 last:border-0"
+              >
+                <div>
+                  <p className="text-fg font-medium">
+                    {customerName(b.customer)}
+                  </p>
+                  <p className="text-fg-muted text-sm">
+                    {format(b.scheduledAt!, "h:mm a")} ·{" "}
+                    {b.service?.name ?? "—"}
+                  </p>
+                </div>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${bookingStatusMobileClass[b.status]}`}
+                >
+                  {bookingStatusLabel[b.status]}
+                </span>
+              </div>
+            ))}
+            {upcoming.length === 0 && (
+              <p className="text-fg-muted px-6 py-6 text-center text-sm">
+                Nothing scheduled.
+              </p>
+            )}
+          </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+        <Card className="py-0">
+          <CardHeader className="pt-4">
+            <CardTitle>Customers by Stage</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <ul className="divide-y divide-neutral-100">
-              {messages.map((m) => (
-                <li key={m.id} className="px-6 py-4">
-                  <p className="text-sm text-neutral-800">
-                    {m.direction === "INBOUND"
-                      ? "Reply from"
-                      : "Message sent to"}{" "}
-                    {customerName(m.customer)}
-                  </p>
-                  <p className="mt-1 text-xs text-neutral-400">
-                    {format(m.createdAt, "MMM d, p")}
-                  </p>
-                </li>
-              ))}
-            </ul>
+          <CardContent className="space-y-3 pb-6">
+            {stages.map((stage) => (
+              <div key={stage.id} className="flex items-center gap-3">
+                <span className="text-fg-muted w-24 shrink-0 text-sm">
+                  {stage.name}
+                </span>
+                <div className="bg-app-bg h-2 flex-1 overflow-hidden rounded-full">
+                  <div
+                    className="bg-accent h-full rounded-full"
+                    style={{
+                      width: `${(stage.customers.length / maxStageCount) * 100}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-fg w-8 shrink-0 text-right text-sm font-semibold">
+                  {stage.customers.length}
+                </span>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

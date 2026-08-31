@@ -15,23 +15,21 @@ export default async function ServicesPage() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
+            className="bg-card-bg flex items-center justify-between rounded-2xl p-4 shadow-sm"
           >
             <div>
-              <p className="font-semibold text-stone-900">{service.name}</p>
-              <p className="text-sm text-stone-500">
+              <p className="text-fg font-semibold">{service.name}</p>
+              <p className="text-fg-muted text-sm">
                 {service.durationMinutes} min
               </p>
             </div>
             <div className="text-right">
               {service.originalPrice && (
-                <p className="text-xs text-stone-400 line-through">
+                <p className="text-fg-subtle text-xs line-through">
                   ${Number(service.originalPrice)}
                 </p>
               )}
-              <p className="font-semibold text-stone-900">
-                ${Number(service.price)}
-              </p>
+              <p className="text-fg font-semibold">${Number(service.price)}</p>
             </div>
           </div>
         ))}

@@ -43,7 +43,7 @@ const COLUMN_ACCENTS: Record<BookingStatus, string> = {
   SCHEDULED: "border-t-blue-400",
   IN_PROGRESS: "border-t-purple-400",
   COMPLETED: "border-t-emerald-400",
-  CANCELED: "border-t-neutral-300",
+  CANCELED: "border-t-card-border",
 };
 
 const COLUMN_COUNT_STYLE: Record<
@@ -77,17 +77,13 @@ function BookingCard({ booking }: { booking: PipelineBooking }) {
       className="cursor-grab p-4 active:cursor-grabbing"
     >
       <div className="flex items-start justify-between">
-        <p className="font-medium text-neutral-900">
-          {customerName(booking.customer)}
-        </p>
-        <span className="text-sm font-semibold text-neutral-900">
-          ${booking.price}
-        </span>
+        <p className="text-fg font-medium">{customerName(booking.customer)}</p>
+        <span className="text-fg text-sm font-semibold">${booking.price}</span>
       </div>
-      <p className="mt-1 text-xs font-medium text-neutral-500">
+      <p className="text-fg-muted mt-1 text-xs font-medium">
         {booking.service?.name ?? "—"}
       </p>
-      <div className="mt-3 space-y-1 text-xs text-neutral-500">
+      <div className="text-fg-muted mt-3 space-y-1 text-xs">
         <div className="flex items-center gap-1.5">
           <Car className="h-3.5 w-3.5" />
           {vehicleLabel(booking.vehicle)}
@@ -118,13 +114,13 @@ function Column({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex w-72 shrink-0 flex-col rounded-2xl border-t-4 bg-neutral-50",
+        "bg-app-bg flex w-72 shrink-0 flex-col rounded-2xl border-t-4",
         COLUMN_ACCENTS[status],
-        isOver && "ring-2 ring-neutral-300",
+        isOver && "ring-accent ring-2",
       )}
     >
       <div className="flex items-center justify-between px-4 py-3">
-        <h3 className="text-sm font-semibold text-neutral-900">
+        <h3 className="text-fg text-sm font-semibold">
           {bookingStatusLabel[status]}
         </h3>
         <Badge variant={COLUMN_COUNT_STYLE[status]}>{bookings.length}</Badge>
@@ -134,7 +130,7 @@ function Column({
           <BookingCard key={booking.id} booking={booking} />
         ))}
         {bookings.length === 0 && (
-          <div className="rounded-xl border border-dashed border-neutral-300 p-4 text-center text-xs text-neutral-400">
+          <div className="border-card-border text-fg-subtle rounded-xl border border-dashed p-4 text-center text-xs">
             No jobs here
           </div>
         )}

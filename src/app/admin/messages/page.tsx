@@ -8,38 +8,36 @@ export default async function MessagesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-        Messages
-      </h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h1 className="text-fg text-2xl font-bold tracking-tight">Messages</h1>
+      <p className="text-fg-muted mt-1 text-sm">
         SMS conversations synced via Twilio.
       </p>
 
       <Card className="mt-8 py-0">
-        <ul className="divide-y divide-neutral-100">
+        <ul className="divide-card-border divide-y">
           {messages.map((m) => (
             <li
               key={m.id}
-              className="flex items-center gap-4 px-6 py-4 hover:bg-neutral-50"
+              className="hover:bg-app-bg flex items-center gap-4 px-6 py-4"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-200 text-xs font-semibold text-neutral-700">
+              <div className="bg-card-border text-fg flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold">
                 {m.customer.firstName[0]}
                 {m.customer.lastName[0]}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-neutral-900">
+                  <p className="text-fg font-medium">
                     {customerName(m.customer)}
                   </p>
-                  <span className="shrink-0 text-xs text-neutral-400">
+                  <span className="text-fg-subtle shrink-0 text-xs">
                     {format(m.createdAt, "MMM d, p")}
                   </span>
                 </div>
-                <p className="mt-0.5 flex items-center gap-1.5 truncate text-sm text-neutral-500">
+                <p className="text-fg-muted mt-0.5 flex items-center gap-1.5 truncate text-sm">
                   {m.direction === "INBOUND" ? (
                     <ArrowDownLeft className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
                   ) : (
-                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-neutral-400" />
+                    <ArrowUpRight className="text-fg-subtle h-3.5 w-3.5 shrink-0" />
                   )}
                   {m.body}
                 </p>

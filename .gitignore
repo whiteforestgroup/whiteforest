@@ -29,3 +29,9 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# prisma
+/src/generated/prisma
+
+# claude
+.claude/settings.local.json

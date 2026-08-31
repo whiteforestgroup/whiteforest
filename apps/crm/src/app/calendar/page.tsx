@@ -1,5 +1,6 @@
 import { bookings } from "@/lib/mock-data";
 import { addDays, format, startOfWeek } from "date-fns";
+import { Card } from "@/components/ui/card";
 
 export default function CalendarPage() {
   const weekStart = startOfWeek(new Date("2026-08-17"), { weekStartsOn: 1 });
@@ -7,25 +8,31 @@ export default function CalendarPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">Calendar</h1>
-      <p className="mt-1 text-sm text-slate-500">Week of {format(weekStart, "MMMM d, yyyy")}</p>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+        Calendar
+      </h1>
+      <p className="mt-1 text-sm text-neutral-500">
+        Week of {format(weekStart, "MMMM d, yyyy")}
+      </p>
 
       <div className="mt-8 grid grid-cols-7 gap-3">
         {days.map((day) => {
           const dayKey = format(day, "yyyy-MM-dd");
-          const dayBookings = bookings.filter((b) => b.preferredDate === dayKey);
+          const dayBookings = bookings.filter(
+            (b) => b.preferredDate === dayKey,
+          );
           const isToday = dayKey === "2026-08-19";
           return (
-            <div
+            <Card
               key={dayKey}
-              className={`min-h-40 rounded-xl border p-3 ${
-                isToday ? "border-slate-900 bg-slate-50" : "border-slate-200 bg-white"
-              }`}
+              className={`min-h-40 p-3 ${isToday ? "border-neutral-900 bg-neutral-50" : ""}`}
             >
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <div className="text-xs font-medium tracking-wide text-neutral-400 uppercase">
                 {format(day, "EEE")}
               </div>
-              <div className="text-lg font-semibold text-slate-900">{format(day, "d")}</div>
+              <div className="text-lg font-semibold text-neutral-900">
+                {format(day, "d")}
+              </div>
               <div className="mt-3 space-y-2">
                 {dayBookings.map((b) => (
                   <div
@@ -37,7 +44,7 @@ export default function CalendarPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           );
         })}
       </div>

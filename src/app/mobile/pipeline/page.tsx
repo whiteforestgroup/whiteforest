@@ -1,61 +1,12 @@
-"use client";
+import { PipelineStageList } from "@/components/mobile/PipelineStageList";
+import { getPipelineStagesWithCustomers } from "@/lib/queries";
+import { db } from "@/lib/db";
 
-import { useState } from "react";
-import { MobileHeader } from "@/components/mobile/MobileHeader";
-import { pipelineStages, pipelineCustomers } from "@/lib/mobile-data";
+export default async function PipelinePage() {
+  const [stages, totalCustomers] = await Promise.all([
+    getPipelineStagesWithCustomers(),
+    db.customer.count(),
+  ]);
 
-export default function PipelinePage() {
-  const [activeStage, setActiveStage] = useState(pipelineStages[1].id);
-  const stage = pipelineStages.find((s) => s.id === activeStage)!;
-  const customers = pipelineCustomers.filter((c) => c.stageId === activeStage);
-
-  return (
-    <div>
-      <MobileHeader title="Pipeline" subtitle="429 customers" />
-
-      <div className="flex gap-2 overflow-x-auto px-6 pt-4 pb-1">
-        {pipelineStages.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            onClick={() => setActiveStage(s.id)}
-            className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap ${
-              s.id === activeStage
-                ? "bg-amber-500 text-white"
-                : "bg-white text-stone-600 shadow-sm"
-            }`}
-          >
-            {s.label} · {s.count}
-          </button>
-        ))}
-      </div>
-
-      <div className="px-6 pt-4">
-        <h2 className="mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
-          {stage.label}
-        </h2>
-        <div className="space-y-2">
-          {customers.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm"
-            >
-              <div>
-                <p className="font-semibold text-stone-900">{c.name}</p>
-                <p className="text-sm text-stone-500">{c.note}</p>
-              </div>
-              <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium whitespace-nowrap text-stone-500">
-                {c.idleDays === 0 ? "New" : `${c.idleDays}d idle`}
-              </span>
-            </div>
-          ))}
-          {customers.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-stone-300 p-6 text-center text-sm text-stone-400">
-              No customers in this stage.
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  return <PipelineStageList stages={stages} totalCustomers={totalCustomers} />;
 }

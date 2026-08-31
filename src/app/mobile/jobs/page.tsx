@@ -1,22 +1,20 @@
 import Link from "next/link";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
-import { jobs, jobStatusClass, jobStatusLabel } from "@/lib/mobile-data";
+import { getBookings, customerName } from "@/lib/queries";
+import { bookingStatusMobileClass, bookingStatusLabel } from "@/lib/status";
 
-function formatHour(hour: number) {
-  const h = Math.floor(hour);
-  const m = hour % 1 === 0.5 ? "30" : "00";
-  const period = h >= 12 ? "PM" : "AM";
-  const displayHour = h % 12 === 0 ? 12 : h % 12;
-  return `${displayHour}:${m} ${period}`;
-}
+type Booking = Awaited<ReturnType<typeof getBookings>>[number];
 
-export default function JobsPage() {
-  const byDay = new Map<string, typeof jobs>();
-  for (const job of [...jobs].sort((a, b) => a.startHour - b.startHour)) {
-    const list = byDay.get(job.date) ?? [];
+export default async function JobsPage() {
+  const bookings = await getBookings();
+
+  const byDay = new Map<string, Booking[]>();
+  for (const job of bookings.filter((b) => b.scheduledAt)) {
+    const key = format(job.scheduledAt!, "yyyy-MM-dd");
+    const list = byDay.get(key) ?? [];
     list.push(job);
-    byDay.set(job.date, list);
+    byDay.set(key, list);
   }
   const days = Array.from(byDay.entries()).sort(([a], [b]) =>
     a.localeCompare(b),
@@ -30,7 +28,7 @@ export default function JobsPage() {
         {days.map(([date, dayJobs]) => (
           <div key={date}>
             <h2 className="mb-2 text-xs font-semibold tracking-wide text-stone-400 uppercase">
-              {format(parseISO(date), "EEE, MMM d").toUpperCase()}
+              {format(new Date(`${date}T00:00:00`), "EEE, MMM d").toUpperCase()}
             </h2>
             <div className="space-y-2">
               {dayJobs.map((job) => (
@@ -41,16 +39,16 @@ export default function JobsPage() {
                 >
                   <div>
                     <p className="font-semibold text-stone-900">
-                      {job.customerName}
+                      {customerName(job.customer)}
                     </p>
                     <p className="text-sm text-stone-500">
-                      {formatHour(job.startHour)} · {job.service}
+                      {format(job.scheduledAt!, "h:mm a")} · {job.service?.name}
                     </p>
                   </div>
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${jobStatusClass[job.status]}`}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${bookingStatusMobileClass[job.status]}`}
                   >
-                    {jobStatusLabel[job.status]}
+                    {bookingStatusLabel[job.status]}
                   </span>
                 </Link>
               ))}

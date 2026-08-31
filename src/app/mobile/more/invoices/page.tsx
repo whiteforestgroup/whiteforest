@@ -1,7 +1,10 @@
 import { MobileHeader } from "@/components/mobile/MobileHeader";
-import { invoices, invoiceStatusClass } from "@/lib/mobile-data";
+import { getInvoices } from "@/lib/queries";
+import { invoiceStatusClass, invoiceStatusLabel } from "@/lib/status";
 
-export default function InvoicesPage() {
+export default async function InvoicesPage() {
+  const invoices = await getInvoices();
+
   return (
     <div>
       <MobileHeader
@@ -17,17 +20,18 @@ export default function InvoicesPage() {
           >
             <div>
               <p className="font-semibold text-stone-900">
-                {invoice.customerName}
+                {invoice.customer.firstName} {invoice.customer.lastName}
               </p>
               <p className="text-sm text-stone-500">
-                ${invoice.amount.toFixed(2)}
-                {invoice.date && ` · ${invoice.date}`}
+                ${Number(invoice.amount).toFixed(2)}
+                {invoice.dueDate &&
+                  ` · ${invoice.dueDate.toLocaleDateString()}`}
               </p>
             </div>
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${invoiceStatusClass[invoice.status]}`}
             >
-              {invoice.status}
+              {invoiceStatusLabel[invoice.status]}
             </span>
           </div>
         ))}

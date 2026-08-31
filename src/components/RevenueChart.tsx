@@ -10,28 +10,15 @@ import {
 } from "recharts";
 import { format, parseISO } from "date-fns";
 
-import { bookings } from "@/lib/mock-data";
-
-const revenueByDay = Array.from(
-  bookings.reduce((acc, booking) => {
-    acc.set(
-      booking.preferredDate,
-      (acc.get(booking.preferredDate) ?? 0) + booking.price,
-    );
-    return acc;
-  }, new Map<string, number>()),
-)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([date, revenue]) => ({ date, revenue }));
-
-export function RevenueChart() {
+export function RevenueChart({
+  data,
+}: {
+  data: { date: string; revenue: number }[];
+}) {
   return (
     <div className="h-56 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={revenueByDay}
-          margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
-        >
+        <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <XAxis
             dataKey="date"
             tickFormatter={(value: string) => format(parseISO(value), "MMM d")}

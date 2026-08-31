@@ -1,13 +1,16 @@
 import { Camera } from "lucide-react";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
-import { expenses, expensesThisMonth } from "@/lib/mobile-data";
+import { getExpenses } from "@/lib/queries";
 
-export default function ExpensesPage() {
+export default async function ExpensesPage() {
+  const expenses = await getExpenses();
+  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+
   return (
     <div className="relative min-h-[550px]">
       <MobileHeader
         title="Expenses"
-        subtitle={`$${expensesThisMonth.toFixed(0)} this month`}
+        subtitle={`$${total.toFixed(0)} this month`}
         back={{ label: "More", href: "/mobile/more" }}
       />
 
@@ -20,11 +23,11 @@ export default function ExpensesPage() {
             <div>
               <p className="font-semibold text-stone-900">{expense.vendor}</p>
               <p className="text-sm text-stone-500">
-                {expense.category} · {expense.date}
+                {expense.category} · {expense.date.toLocaleDateString()}
               </p>
             </div>
             <p className="font-semibold text-stone-900">
-              ${expense.amount.toFixed(2)}
+              ${Number(expense.amount).toFixed(2)}
             </p>
           </div>
         ))}

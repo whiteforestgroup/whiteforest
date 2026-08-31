@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { MobileTabBar } from "@/components/mobile/MobileTabBar";
 
+// Every page under /mobile reads live data — never statically prerender it.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Detailing CRM — Field App",
   description:

@@ -1,0 +1,203 @@
+// Phase 1 schema: the real data layer behind the CRM. Every model here
+// backs at least one screen already built in src/app/admin or src/app/mobile
+// — see the seed script for how mock data maps onto these tables.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StaffRole {
+  OWNER
+  TECHNICIAN
+}
+
+model Staff {
+  id          String    @id @default(cuid())
+  clerkUserId String?   @unique
+  name        String
+  email       String    @unique
+  role        StaffRole @default(TECHNICIAN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  bookings    Booking[]
+}
+
+// A customer's position in the sales pipeline (New Lead -> Follow Up ->
+// Booked...). Distinct from Booking.status, which tracks an individual
+// job's workflow (Scheduled -> In Progress -> Completed).
+model PipelineStage {
+  id        String   @id @default(cuid())
+  name      String
+  order     Int      @unique
+  color     String   @default("amber")
+  createdAt DateTime @default(now())
+
+  customers Customer[]
+}
+
+model Customer {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  phone      String
+  email      String?
+  address    String?
+  city       String?
+  state      String?
+  zip        String?
+  leadSource String?
+  notes      String?
+  stageId    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  stage      PipelineStage? @relation(fields: [stageId], references: [id])
+  vehicles   Vehicle[]
+  bookings   Booking[]
+  invoices   Invoice[]
+  messages   Message[]
+
+  @@index([stageId])
+}
+
+model Vehicle {
+  id         String   @id @default(cuid())
+  customerId String
+  year       Int?
+  make       String?
+  model      String?
+  color      String?
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  bookings   Booking[]
+
+  @@index([customerId])
+}
+
+model Service {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  durationMinutes Int
+  price           Decimal  @db.Decimal(10, 2)
+  originalPrice   Decimal? @db.Decimal(10, 2)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  bookings        Booking[]
+}
+
+enum BookingStatus {
+  NEW
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  customerId      String
+  vehicleId       String?
+  serviceId       String?
+  assignedToId    String?
+  status          BookingStatus @default(NEW)
+  scheduledAt     DateTime?
+  durationMinutes Int           @default(60)
+  price           Decimal       @db.Decimal(10, 2)
+  address         String?
+  notes           String?
+  beforePhotoUrl  String?
+  afterPhotoUrl   String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicle         Vehicle? @relation(fields: [vehicleId], references: [id])
+  service         Service? @relation(fields: [serviceId], references: [id])
+  assignedTo      Staff?   @relation(fields: [assignedToId], references: [id])
+  invoice         Invoice?
+
+  @@index([customerId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+}
+
+model Invoice {
+  id         String        @id @default(cuid())
+  customerId String
+  bookingId  String?       @unique
+  amount     Decimal       @db.Decimal(10, 2)
+  status     InvoiceStatus @default(DRAFT)
+  dueDate    DateTime?
+  paidAt     DateTime?
+  createdAt  DateTime      @default(now())
+
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  booking    Booking?  @relation(fields: [bookingId], references: [id])
+  payments   Payment[]
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  invoiceId String
+  amount    Decimal  @db.Decimal(10, 2)
+  method    String   @default("card")
+  paidAt    DateTime @default(now())
+
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
+
+model Expense {
+  id              String   @id @default(cuid())
+  vendor          String
+  category        String
+  amount          Decimal  @db.Decimal(10, 2)
+  date            DateTime @default(now())
+  receiptPhotoUrl String?
+  createdAt       DateTime @default(now())
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageChannel {
+  SMS
+  EMAIL
+}
+
+model Message {
+  id         String           @id @default(cuid())
+  customerId String
+  direction  MessageDirection
+  channel    MessageChannel   @default(SMS)
+  body       String
+  read       Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+}

@@ -1,7 +1,6 @@
-import { customers } from "@/lib/mock-data";
+import { format } from "date-fns";
 import { Phone, Mail, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -11,8 +10,11 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import { getCustomers, customerName } from "@/lib/queries";
 
-export default function CustomersPage() {
+export default async function CustomersPage() {
+  const customers = await getCustomers();
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -52,14 +54,12 @@ export default function CustomersPage() {
               <TableRow key={customer.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar>
-                      {customer.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </Avatar>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-xs font-semibold text-neutral-700">
+                      {customer.firstName[0]}
+                      {customer.lastName[0]}
+                    </div>
                     <span className="font-medium text-neutral-900">
-                      {customer.name}
+                      {customerName(customer)}
                     </span>
                   </div>
                 </TableCell>
@@ -68,22 +68,34 @@ export default function CustomersPage() {
                     <Phone className="h-3.5 w-3.5 text-neutral-400" />
                     {customer.phone}
                   </div>
-                  <div className="mt-1 flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-neutral-400" />
-                    {customer.email}
-                  </div>
+                  {customer.email && (
+                    <div className="mt-1 flex items-center gap-1.5">
+                      <Mail className="h-3.5 w-3.5 text-neutral-400" />
+                      {customer.email}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell className="text-neutral-700">
-                  {customer.vehicle}
+                  {customer.vehicles[0]
+                    ? [
+                        customer.vehicles[0].year,
+                        customer.vehicles[0].make,
+                        customer.vehicles[0].model,
+                      ]
+                        .filter(Boolean)
+                        .join(" ")
+                    : "—"}
                 </TableCell>
                 <TableCell className="text-neutral-700">
                   {customer.visits}
                 </TableCell>
                 <TableCell className="font-medium text-neutral-900">
-                  ${customer.totalSpent}
+                  ${customer.totalSpent.toLocaleString()}
                 </TableCell>
                 <TableCell className="text-neutral-500">
-                  {customer.lastVisit}
+                  {customer.lastVisit
+                    ? format(customer.lastVisit, "yyyy-MM-dd")
+                    : "—"}
                 </TableCell>
               </TableRow>
             ))}

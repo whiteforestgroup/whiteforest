@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { Sidebar } from "@/components/Sidebar";
 
+// Every page under /admin reads live data — never statically prerender it.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Detailing CRM",
   description: "Manage bookings, jobs, and customers.",

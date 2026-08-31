@@ -2,21 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
+import { createCustomer } from "@/lib/actions";
 
 const LEAD_SOURCES = ["Referral", "Google", "Website", "Walk-In"];
 
 export default function AddCustomerPage() {
-  const router = useRouter();
   const [leadSource, setLeadSource] = useState("Referral");
-
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    toast.success("Customer saved");
-    router.push("/mobile/customers");
-  }
 
   return (
     <div>
@@ -25,13 +17,16 @@ export default function AddCustomerPage() {
         back={{ label: "Cancel", href: "/mobile/customers" }}
       />
 
-      <form onSubmit={handleSubmit} className="space-y-4 px-6 pt-4">
+      <form action={createCustomer} className="space-y-4 px-6 pt-4">
+        <input type="hidden" name="leadSource" value={leadSource} />
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs font-semibold tracking-wide text-stone-400 uppercase">
               First Name
             </label>
             <input
+              name="firstName"
               required
               className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 focus:border-amber-500 focus:outline-none"
             />
@@ -41,6 +36,7 @@ export default function AddCustomerPage() {
               Last Name
             </label>
             <input
+              name="lastName"
               required
               className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 focus:border-amber-500 focus:outline-none"
             />
@@ -52,6 +48,7 @@ export default function AddCustomerPage() {
             Phone
           </label>
           <input
+            name="phone"
             type="tel"
             placeholder="(555) 000-0000"
             required
@@ -64,6 +61,7 @@ export default function AddCustomerPage() {
             Address
           </label>
           <input
+            name="address"
             placeholder="Street, City, State"
             className="mt-1 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-300 focus:border-amber-500 focus:outline-none"
           />

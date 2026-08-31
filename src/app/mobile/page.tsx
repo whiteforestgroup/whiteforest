@@ -1,23 +1,26 @@
 import Link from "next/link";
+import { format } from "date-fns";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
-import { jobs, jobStatusClass, jobStatusLabel } from "@/lib/mobile-data";
+import { getBookings, customerName } from "@/lib/queries";
+import { bookingStatusMobileClass, bookingStatusLabel } from "@/lib/status";
+import { db } from "@/lib/db";
 
-function formatHour(hour: number) {
-  const h = Math.floor(hour);
-  const m = hour % 1 === 0.5 ? "30" : "00";
-  const period = h >= 12 ? "PM" : "AM";
-  const displayHour = h % 12 === 0 ? 12 : h % 12;
-  return `${displayHour}:${m} ${period}`;
-}
+export default async function TodayPage() {
+  const [bookings, revenueAgg, leadCount] = await Promise.all([
+    getBookings(),
+    db.booking.aggregate({ _sum: { price: true } }),
+    db.customer.count(),
+  ]);
 
-export default function TodayPage() {
-  const upNext = [...jobs]
-    .sort((a, b) => a.date.localeCompare(b.date) || a.startHour - b.startHour)
-    .slice(0, 3);
+  const upNext = bookings.filter((b) => b.scheduledAt).slice(0, 3);
+  const revenue = Number(revenueAgg._sum.price ?? 0);
 
   return (
     <div>
-      <MobileHeader title="Today" subtitle="Wednesday, August 26" />
+      <MobileHeader
+        title="Today"
+        subtitle={format(new Date(), "EEEE, MMMM d")}
+      />
 
       <div className="px-6 pt-4">
         <div className="grid grid-cols-3 gap-3">
@@ -25,19 +28,23 @@ export default function TodayPage() {
             <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
               Revenue
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">$18.2k</p>
+            <p className="mt-1 text-lg font-bold text-stone-900">
+              ${revenue.toLocaleString()}
+            </p>
           </div>
           <div className="rounded-2xl bg-white p-3 shadow-sm">
             <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
               Leads
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">12</p>
+            <p className="mt-1 text-lg font-bold text-stone-900">{leadCount}</p>
           </div>
           <div className="rounded-2xl bg-white p-3 shadow-sm">
             <p className="text-[11px] font-medium tracking-wide text-stone-400 uppercase">
               Jobs
             </p>
-            <p className="mt-1 text-lg font-bold text-stone-900">9</p>
+            <p className="mt-1 text-lg font-bold text-stone-900">
+              {bookings.length}
+            </p>
           </div>
         </div>
 
@@ -53,19 +60,25 @@ export default function TodayPage() {
             >
               <div>
                 <p className="font-semibold text-stone-900">
-                  {job.customerName}
+                  {customerName(job.customer)}
                 </p>
                 <p className="text-sm text-stone-500">
-                  {formatHour(job.startHour)} · {job.service}
+                  {job.scheduledAt && format(job.scheduledAt, "h:mm a")} ·{" "}
+                  {job.service?.name}
                 </p>
               </div>
               <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${jobStatusClass[job.status]}`}
+                className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${bookingStatusMobileClass[job.status]}`}
               >
-                {jobStatusLabel[job.status]}
+                {bookingStatusLabel[job.status]}
               </span>
             </Link>
           ))}
+          {upNext.length === 0 && (
+            <p className="rounded-2xl bg-white p-4 text-center text-sm text-stone-400 shadow-sm">
+              Nothing scheduled yet.
+            </p>
+          )}
         </div>
       </div>
     </div>

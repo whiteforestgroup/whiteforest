@@ -1,12 +1,6 @@
-import {
-  bookings,
-  statusLabels,
-  dashboardActivity,
-  type BookingStatus,
-} from "@/lib/mock-data";
+import { format } from "date-fns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RevenueChart } from "@/components/RevenueChart";
 import {
   Table,
   TableHeader,
@@ -15,30 +9,44 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import { RevenueChart } from "@/components/RevenueChart";
+import { getBookings, customerName, vehicleLabel } from "@/lib/queries";
+import { db } from "@/lib/db";
+import { bookingStatusBadge, bookingStatusLabel } from "@/lib/status";
 
-const badgeVariant: Record<
-  BookingStatus,
-  "amber" | "blue" | "purple" | "emerald"
-> = {
-  new: "amber",
-  scheduled: "blue",
-  in_progress: "purple",
-  completed: "emerald",
-};
+export default async function Dashboard() {
+  const [bookings, customerCount, messages] = await Promise.all([
+    getBookings(),
+    db.customer.count(),
+    db.message.findMany({
+      include: { customer: true },
+      orderBy: { createdAt: "desc" },
+      take: 4,
+    }),
+  ]);
 
-export default function Dashboard() {
-  const newCount = bookings.filter((b) => b.status === "new").length;
+  const newCount = bookings.filter((b) => b.status === "NEW").length;
   const scheduledCount = bookings.filter(
-    (b) => b.status === "scheduled",
+    (b) => b.status === "SCHEDULED",
   ).length;
-  const revenue = bookings.reduce((sum, b) => sum + b.price, 0);
+  const revenue = bookings.reduce((sum, b) => sum + Number(b.price), 0);
 
   const stats = [
     { label: "New Requests", value: newCount },
     { label: "Scheduled Jobs", value: scheduledCount },
     { label: "Pipeline Revenue", value: `$${revenue.toLocaleString()}` },
-    { label: "Active Customers", value: 6 },
+    { label: "Active Customers", value: customerCount },
   ];
+
+  const revenueByDate = new Map<string, number>();
+  for (const b of bookings) {
+    if (!b.scheduledAt) continue;
+    const key = format(b.scheduledAt, "yyyy-MM-dd");
+    revenueByDate.set(key, (revenueByDate.get(key) ?? 0) + Number(b.price));
+  }
+  const chartData = Array.from(revenueByDate.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, revenue]) => ({ date, revenue }));
 
   return (
     <div>
@@ -65,7 +73,7 @@ export default function Dashboard() {
           <CardTitle>Revenue This Week</CardTitle>
         </CardHeader>
         <CardContent>
-          <RevenueChart />
+          <RevenueChart data={chartData} />
         </CardContent>
       </Card>
 
@@ -78,7 +86,7 @@ export default function Dashboard() {
             <TableHeader>
               <TableRow>
                 <TableHead>Customer</TableHead>
-                <TableHead>Package</TableHead>
+                <TableHead>Service</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
@@ -88,20 +96,26 @@ export default function Dashboard() {
                 <TableRow key={booking.id}>
                   <TableCell>
                     <div className="font-medium text-neutral-900">
-                      {booking.customerName}
+                      {customerName(booking.customer)}
                     </div>
-                    <div className="text-neutral-500">{booking.vehicle}</div>
+                    <div className="text-neutral-500">
+                      {vehicleLabel(booking.vehicle)}
+                    </div>
                   </TableCell>
                   <TableCell className="text-neutral-700">
-                    {booking.packageName}
-                    <div className="text-neutral-500">${booking.price}</div>
+                    {booking.service?.name ?? "—"}
+                    <div className="text-neutral-500">
+                      ${Number(booking.price)}
+                    </div>
                   </TableCell>
                   <TableCell className="text-neutral-700">
-                    {booking.preferredDate}
+                    {booking.scheduledAt
+                      ? format(booking.scheduledAt, "yyyy-MM-dd")
+                      : "—"}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={badgeVariant[booking.status]}>
-                      {statusLabels[booking.status]}
+                    <Badge variant={bookingStatusBadge[booking.status]}>
+                      {bookingStatusLabel[booking.status]}
                     </Badge>
                   </TableCell>
                 </TableRow>
@@ -116,10 +130,17 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="p-0">
             <ul className="divide-y divide-neutral-100">
-              {dashboardActivity.map((item) => (
-                <li key={item.id} className="px-6 py-4">
-                  <p className="text-sm text-neutral-800">{item.text}</p>
-                  <p className="mt-1 text-xs text-neutral-400">{item.time}</p>
+              {messages.map((m) => (
+                <li key={m.id} className="px-6 py-4">
+                  <p className="text-sm text-neutral-800">
+                    {m.direction === "INBOUND"
+                      ? "Reply from"
+                      : "Message sent to"}{" "}
+                    {customerName(m.customer)}
+                  </p>
+                  <p className="mt-1 text-xs text-neutral-400">
+                    {format(m.createdAt, "MMM d, p")}
+                  </p>
                 </li>
               ))}
             </ul>

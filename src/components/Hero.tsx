@@ -32,7 +32,7 @@ export function Hero() {
             className="rounded-full px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition-transform hover:scale-[1.02]"
             style={{ backgroundColor: tenant.colors.accent }}
           >
-            Book Your Detail
+            Get a Quote
           </a>
           <a
             href="#services"
